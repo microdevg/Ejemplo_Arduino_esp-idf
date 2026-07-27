@@ -15,3 +15,44 @@ El proyecto permite elegir la estructura del código mediante `sdkconfig`. Puede
 1. Abre la herramienta de configuración:
    ```bash
    idf.py menuconfig
+   ```
+
+
+   ### USAR `app_main`
+
+    Si queremos usar app_main podemos configurar el proyecto de la siguiente manera.
+
+   ![alt text](image.png)
+
+
+Luego debemos usar un codigo de este estilo:
+```c
+
+#include "Arduino.h"
+
+extern "C" void app_main(void)
+{
+    // Inicializa los componentes internos de Arduino (HAL, timers, etc.)
+    initArduino();
+
+    Serial.begin(115200);
+    while(!Serial){
+        ; // Espera a que el puerto serie se conecte
+    }
+
+    int counter = 0;
+    char buff[25] = {0};
+
+    // Bucle principal (equivalente al loop)
+    while (true) {
+        sprintf(buff, "Counter=%d\n", counter);
+        Serial.print(buff);
+        
+        delay(1000); // Función de retardo de Arduino/FreeRTOS
+        counter++;
+    }
+}
+
+
+
+```
